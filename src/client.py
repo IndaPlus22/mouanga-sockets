@@ -27,10 +27,9 @@ s.connect( (HOST, PORT) )
 # send messages
 def send_messages(_socket=s):
     while True:
-        message_sent = sys.stdin.readline()
+        message_sent = input("[You]: ")
         _socket.send(message_sent.encode())
-        sys.stdout.write(f"[You]: {message_sent}")
-        sys.stdout.flush()
+        print("\n")
 
 # read messages
 def read_messages(_socket=s):
@@ -39,6 +38,9 @@ def read_messages(_socket=s):
         if message_received:
             print(message_received)
 
+
+# make the client be able to read and send, simultaneously!!!
+# with multi-threading
 def main():
 
     send = Thread(target = send_messages, args = (s,) )

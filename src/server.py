@@ -54,7 +54,7 @@ def thread_loop(connection, address):
             # we don't want to print empty messages, thus the "if"
             if message:
                 print(f"[{address}]: {message} ")
-                send_all_except(NONE_CONNECTION, f"[{address}]: {message}")
+                send_all_except(connection, f"[{address}]: {message}")
         except BaseException as err:
             # we silently ignore the exception, because otherwise the server console is flooded when somebody leaves
             continue
