@@ -10,45 +10,43 @@ appropriate.
 """
 
 import socket
-import select
 import sys
+from threading import Thread
 
 HOST = "127.0.0.1"
 PORT = 2625
 MAX_MESSAGE_LENGTH = 255
 
-running = True
-
 s = socket.socket()
 
 s.connect( (HOST, PORT) )
 
+""" damn i hate windows. of course select.select() doesn't work on this useless OS """
 
-while True:
 
-    list_of_sockets = [socket.socket(), s]
-    read_sockets, write_socket, error_socket = select.select(list_of_sockets, [], [])
+# send messages
+def send_messages(_socket=s):
+    while True:
+        message_sent = sys.stdin.readline()
+        _socket.send(message_sent.encode())
+        sys.stdout.write(f"[You]: {message_sent}")
+        sys.stdout.flush()
 
-    # Read messages
-    for _socket in read_sockets:
-        if _socket == s:
-            message_received = s.recv(MAX_MESSAGE_LENGTH).decode()
+# read messages
+def read_messages(_socket=s):
+    while True:
+        message_received = _socket.recv(MAX_MESSAGE_LENGTH).decode()
+        if message_received:
             print(message_received)
-        else:
-    # Send messages
-            message_sent = sys.stdin.readline()
-            s.send(message_sent.encode())
-            sys.stdout.flush()
 
-    
+def main():
 
+    send = Thread(target = send_messages, args = (s,) )
+    read = Thread(target = read_messages, args = (s,) )
 
+    send.start()
+    read.start()
+    send.join()
+    read.join()
 
-print(
-    s.recv(1024).decode()
-)
-
-s.close()
-
-
-
+main()

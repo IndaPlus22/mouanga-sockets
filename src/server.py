@@ -56,8 +56,7 @@ def thread_loop(connection, address):
                 print(f"[{address}]: {message} ")
                 send_all_except(NONE_CONNECTION, f"[{address}]: {message}")
         except BaseException as err:
-        #   The following print statement can be uncommented, but can cause a lot of spam. So I keep it green for now    
-            print(f"Error: `{err}`")
+            # we silently ignore the exception, because otherwise the server console is flooded when somebody leaves
             continue
 
 
